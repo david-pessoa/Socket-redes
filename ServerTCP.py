@@ -3,12 +3,11 @@
 ######################### IMPORTANTE! ###############################
 
 import socket #importa modulo socket
-    #TODO: Testar todos os casos
     #TODO: Implementar arte ASCII
     #TODO: Tentar limpar a tela
  
 TCP_IP = '192.168.0.5' # endereço IP do servidor 
-TCP_PORTA = 3225     # porta disponibilizada pelo servidor
+TCP_PORTA = 8080     # porta disponibilizada pelo servidor
 TAMANHO_BUFFER = 1024     # definição do tamanho do buffer
  
 def show_placar(placar):
@@ -46,9 +45,10 @@ while 1:
 
     #dados retidados da mensagem recebida
     cliente_choice = conn.recv(TAMANHO_BUFFER).decode("UTF-8") #Recebe resposta do cliente
-    if cliente_choice == "QUIT":
-        print("Seu oponente desistiu da partida")
+    if cliente_choice == "QUIT" or cliente_choice == "":
+        print("\nSeu oponente desistiu da partida")
         print("Jogo encerrado.")
+        break
     else:
         
         conn.send(server_choice.encode("UTF-8"))  # envia dados recebidos em letra maiuscula
