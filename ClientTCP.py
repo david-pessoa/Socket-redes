@@ -5,8 +5,9 @@
 # Pedro Nomura
 
 import socket
-
-from numpy import integer #importa modulo socket
+    #TODO: Testar todos os casos
+    #TODO: Implementar arte ASCII
+    #TODO: Tentar limpar a tela
 
 TCP_IP = '192.168.0.5' # endereço IP do cliente
 TCP_PORTA = 3225      # porta disponibilizada pelo servidor
@@ -29,16 +30,16 @@ while True:
     print("3 Tesoura")
 
     cliente_choice = input("Escolha: ") # Cliente insere mensagem
-    while not isinstance(cliente_choice, int) or cliente_choice != "QUIT":
+    while cliente_choice != "1" and cliente_choice != "2" and cliente_choice != "3" and cliente_choice != "QUIT":
         print("Insira um número de 1 a 3 ou QUIT para sair")
         cliente_choice = input("Escolha: ") # Cliente insere mensagem
     if cliente_choice == "QUIT": #Se o cliente digitou QUIT sai do chat
         print("Encerrando conexão.....")
         break
-    cliente_choice = int(cliente_choice)
     
     cliente.send(cliente_choice.encode('UTF-8')) # Mensagem é enviada ao servidor
-    
+    cliente_choice = int(cliente_choice)
+
     # recebe dados do servidor 
     data, addr = cliente.recvfrom(1024) #Cliente recebe resposta do servidor
     server_choice = data.decode("UTF-8") #Decodifica mensagem
@@ -112,10 +113,6 @@ while True:
         print("Houve algum erro")
         print("Encerrando conexão.....")
         break
-    #TODO: Continuar ifs para o cliente e servidor
-    #TODO: Testar código
-
-
 
 # fecha conexão com servidor
 cliente.close()

@@ -3,6 +3,9 @@
 ######################### IMPORTANTE! ###############################
 
 import socket #importa modulo socket
+    #TODO: Testar todos os casos
+    #TODO: Implementar arte ASCII
+    #TODO: Tentar limpar a tela
  
 TCP_IP = '192.168.0.5' # endereço IP do servidor 
 TCP_PORTA = 3225     # porta disponibilizada pelo servidor
@@ -34,14 +37,12 @@ while 1:
     print("3 Tesoura")
 
     server_choice = input("Escolha: ") # Servidor insere mensagem
-    while not isinstance(server_choice, int) or server_choice != "QUIT":
+    while server_choice != "1" and server_choice != "2" and server_choice != "3" and server_choice != "QUIT":
         print("Insira um número de 1 a 3 ou QUIT para sair")
         server_choice = input("Escolha: ") # Servidor insere mensagem
     if server_choice == "QUIT": #Se o servidor digitou QUIT sai do chat
         print("Encerrando conexão.....")
         break
-
-    server_choice = int(server_choice)
 
     #dados retidados da mensagem recebida
     cliente_choice = conn.recv(TAMANHO_BUFFER).decode("UTF-8") #Recebe resposta do cliente
@@ -51,6 +52,8 @@ while 1:
     else:
         
         conn.send(server_choice.encode("UTF-8"))  # envia dados recebidos em letra maiuscula
+        server_choice = int(server_choice)
+        cliente_choice = int(cliente_choice)
 
         # Pedra Pedra
         if cliente_choice == 1 and server_choice == 1:
