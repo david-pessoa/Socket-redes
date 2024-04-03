@@ -1,9 +1,8 @@
 ######################### IMPORTANTE! ###############################
 #                   EXECUTE O ServerTCP.py primeiro!
 ######################### IMPORTANTE! ###############################
-
+from ASCII_art import *
 import socket #importa modulo socket
-    #TODO: Implementar arte ASCII
     #TODO: Tentar limpar a tela
  
 TCP_IP = '192.168.0.5' # endereço IP do servidor 
@@ -55,64 +54,56 @@ while 1:
         server_choice = int(server_choice)
         cliente_choice = int(cliente_choice)
 
+        print(indica)
         # Pedra Pedra
         if cliente_choice == 1 and server_choice == 1:
-            print("\n\n Você: Pedra")
-            print("Oponente: Pedra")
+            print(pedra_pedra)
             print("Empate")
 
         # Papel Pedra
         elif cliente_choice == 1 and server_choice == 2:
-            print("\n\n Você: Papel")
-            print("Oponente: Pedra")
+            print(papel_pedra)
             print("Você ganhou!")
             placar[1] += 1
 
         # Tesoura Pedra
         elif cliente_choice == 1 and server_choice == 3:
-            print("\n\n Você: Tesoura")
-            print("Oponente: Pedra")
+            print(tesoura_pedra)
             print("Você perdeu!")
             placar[0] += 1
 
         # Pedra Papel
         elif cliente_choice == 2 and server_choice == 1:
-            print("\n\n Você: Pedra")
-            print("Oponente: Papel")
+            print(pedra_papel)
             print("Você perdeu!")
             placar[0] += 1
 
         # Papel Papel
         elif cliente_choice == 2 and server_choice == 2:
-            print("\n\n Você: Papel")
-            print("Oponente: Papel")
+            print(papel_papel)
             print("Empate")
 
         # Tesoura Papel
         elif cliente_choice == 2 and server_choice == 3:
-            print("\n\n Você: Tesoura")
-            print("Oponente: Papel")
+            print(tesoura_papel)
             print("Você ganhou!")
             placar[1] += 1
 
         # Pedra Tesoura
         elif cliente_choice == 3 and server_choice == 1:
-            print("\n\n Você: Pedra")
-            print("Oponente: Tesoura")
+            print(pedra_tesoura)
             print("Você ganhou!")
             placar[1] += 1
 
         # Papel Tesoura
         elif cliente_choice == 3 and server_choice == 2:
-            print("\n\n Você: Papel")
-            print("Oponente: Tesoura")
+            print(papel_tesoura)
             print("Você perdeu!")
             placar[0] += 1
 
         # Tesoura Tesoura
         elif cliente_choice == 3 and server_choice == 3:
-            print("\n\n Você: Tesoura")
-            print("Oponente: Tesoura")
+            print(tesoura_tesoura)
             print("Empate")
 
         else:
