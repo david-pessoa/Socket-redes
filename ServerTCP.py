@@ -5,8 +5,8 @@ from ASCII_art import *
 import socket #importa modulo socket
     #TODO: Tentar limpar a tela
  
-TCP_IP = '192.168.0.5' # endereço IP do servidor 
-TCP_PORTA = 8080     # porta disponibilizada pelo servidor
+TCP_IP = '192.168.0.2' # endereço IP do servidor 
+TCP_PORTA = 3225     # porta disponibilizada pelo servidor
 TAMANHO_BUFFER = 1024     # definição do tamanho do buffer
  
 def show_placar(placar):

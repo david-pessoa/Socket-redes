@@ -10,7 +10,7 @@ import socket
     #TODO: Colocar ASCII nas mensagens de "perdeu", "empate" e "ganhou"
 
 TCP_IP = '192.168.0.5' # endereço IP do cliente
-TCP_PORTA = 8080      # porta disponibilizada pelo servidor
+TCP_PORTA = 3225      # porta disponibilizada pelo servidor
 TAMANHO_BUFFER = 1024
 
 def show_placar(placar):
@@ -86,7 +86,7 @@ while True:
     
     # Tesoura Pedra
     elif cliente_choice == 3 and server_choice == 1:
-        print(tesoura_tesoura)
+        print(tesoura_pedra)
         print("Você perdeu!")
         placar[1] += 1
     
