@@ -1,32 +1,38 @@
 ######################### IMPORTANTE! ###############################
 #                   EXECUTE O ServerTCP.py primeiro!
 ######################### IMPORTANTE! ###############################
+# David Varão Lima Bentes Pessoa  10402647
+# Pedro Nomura Picchioni  10401616
+
 from ASCII_art import *
 import socket #importa modulo socket
     #TODO: Tentar limpar a tela
  
-TCP_IP = '192.168.0.2' # endereço IP do servidor 
-TCP_PORTA = 3225     # porta disponibilizada pelo servidor
+SERVER_IP = '192.168.0.2' # endereço IP do servidor
+CLIENTE_IP = '192.168.0.2'
+PORTA_TCP = 4040     # porta disponibilizada pelo servidor
+PORTA_UDP = 6667
 TAMANHO_BUFFER = 1024     # definição do tamanho do buffer
  
 def show_placar(placar):
-    print(f"\t\tCliente {placar[0]}     X      Servidor {placar[1]}\n\n")
+    print(f"\t\tServidor {placar[1]}     X      Cliente {placar[0]}\n\n")
 
 # Criação de socket TCP
 # SOCK_STREAM, indica que será TCP.
-servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+servidorTCP = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # IP e porta que o servidor deve aguardar a conexão
-servidor.bind((TCP_IP, TCP_PORTA))
+servidorTCP.bind((SERVER_IP, PORTA_TCP))
 
 #Define o limite de conexões. 
-servidor.listen(1)
+servidorTCP.listen(1)
 
 placar = [0, 0] # Posicão 0 cliente / Posição 1 servidor
-print(f"Esperando um oponente..............") 
+print(f"Esperando um oponente..............")
+
 # Aceita conexão 
-conn, addr = servidor.accept()
+conn, addr = servidorTCP.accept()
 print ('Endereço conectado:', addr) #Exibe IP da máquina conectada
+
 while 1:
     show_placar(placar)
     print("Escolha entre:")
@@ -39,7 +45,7 @@ while 1:
         print("Insira um número de 1 a 3 ou QUIT para sair")
         server_choice = input("Escolha: ") # Servidor insere mensagem
     if server_choice == "QUIT": #Se o servidor digitou QUIT sai do chat
-        print("Encerrando conexão.....")
+        print("Encerrando jogo")
         break
 
     #dados retidados da mensagem recebida
@@ -108,7 +114,29 @@ while 1:
 
         else:
             print("Houve algum erro")
-            print("Encerrando conexão.....")
+            print("Encerrando jogo.........")
             break
+
+# Encerra conexão TCP com o cliente
 conn.close()
 
+servidor_UDP = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+# IP e porta que o servidor deve aguardar a conexão
+servidor_UDP.bind((SERVER_IP, PORTA_UDP)) 
+
+# Inicia chat após o jogo
+print("\t\tCHAT\n\n")
+while True:
+    mensagem_cliente, addr = servidor_UDP.recvfrom(1024)
+    mensagem_cliente = mensagem_cliente.decode("UTF-8")
+    if mensagem_cliente != "" and mensagem_cliente != "QUIT":
+       print("Cliente: ", mensagem_cliente)
+    else:
+        print("Cliente saiu do chat. Encerrando..............")
+        break
+
+    mensagem_servidor = input("Envie uma mensagem: ").encode('UTF-8')
+    if mensagem_servidor == "QUIT":
+        print("Encerrando chat...........")
+        break
+    servidor_UDP.sendto(mensagem_servidor, (CLIENTE_IP, PORTA_UDP))
