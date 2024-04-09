@@ -2,27 +2,25 @@
 #                   EXECUTE O ServerTCP.py primeiro!
 ######################### IMPORTANTE! ###############################
 # David Varão Lima Bentes Pessoa  10402647
-# Pedro Nomura Picchioni  10401616
+# Pedro Nomura 10401616
 from ASCII_art import *
 import socket
-import threading
-
-SERVER_IP = '192.168.0.2' # endereço IP do servidor
-CLIENTE_IP = '192.168.0.2' # endereço IP do Cliente
-PORTA_TCP = 4040  # porta para comunicação TCP
-PORTA_UDP = 6667  # porta para comunicação UDP
+    
+TCP_IP = '192.168.0.3' # endereço IP do servidor
+TCP_PORTA = 3225      # porta disponibilizada pelo servidor
 TAMANHO_BUFFER = 1024
 
 def show_placar(placar):
     print(f"\t\tCliente {placar[0]}     X      Servidor {placar[1]}\n\n")
 
 # Criação de socket TCP do cliente
-clienteTCP = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Conecta ao servidor em IP e porta especifica 
-clienteTCP.connect((SERVER_IP, PORTA_TCP))
+cliente.connect((TCP_IP, TCP_PORTA))
 
 placar = [0, 0] # Posicão 0 cliente / Posição 1 servidor
 while True:
+    flag = False
     show_placar(placar)
     print("Escolha entre:")
     print("1 Pedra")
@@ -33,22 +31,27 @@ while True:
     while cliente_choice != "1" and cliente_choice != "2" and cliente_choice != "3" and cliente_choice != "QUIT":
         print("Insira um número de 1 a 3 ou QUIT para sair")
         cliente_choice = input("Escolha: ") # Cliente insere mensagem
-    if cliente_choice == "QUIT": #Se o cliente digitou QUIT sai do jogo
-        print("Encerrando jogo.....")
-        break
+    if cliente_choice == "QUIT": #Se o cliente digitou QUIT sai do chat
+        print("Encerrando conexão.....")
+        flag = True
     
-    clienteTCP.send(cliente_choice.encode('UTF-8')) # Mensagem é enviada ao servidor
-    cliente_choice = int(cliente_choice)
-
+    cliente.send(cliente_choice.encode('UTF-8')) # Mensagem é enviada ao servidor
+    
     # recebe dados do servidor 
-    data, addr = clienteTCP.recvfrom(1024) #Cliente recebe resposta do servidor
+    data, addr = cliente.recvfrom(1024) #Cliente recebe resposta do servidor
     server_choice = data.decode("UTF-8") #Decodifica mensagem
-    if server_choice == "QUIT" or server_choice == "": # Se a resposta do servidor foi QUIT sai do jogo
+    if server_choice == "QUIT" or server_choice == "": # Se a resposta do servidor foi QUIT sai do chat
         print("\nSeu oponente desistiu da partida")
         print("Jogo encerrado.")
         break
-    server_choice = int(server_choice)
-
+    if flag:
+        break
+    try:
+        server_choice = int(server_choice)
+    except:
+        break
+    
+    cliente_choice = int(cliente_choice)
     print(indica)
     # Pedra Pedra
     if cliente_choice == 1 and server_choice == 1:
@@ -103,35 +106,22 @@ while True:
 
     else:
         print("Houve algum erro")
-        print("Encerrando jogo.....")
+        print("Encerrando conexão.....")
         break
-
-# fecha conexão TCP com servidor
-clienteTCP.close()
-
-def receber_mensagens():
-    while True:
-        mensagem_servidor, addr = cliente_UDP.recvfrom(1024)
-        mensagem_servidor = mensagem_servidor.decode("UTF-8")
-        if mensagem_servidor != "" and mensagem_servidor != "QUIT":
-           print("Servidor: ", mensagem_servidor)
-        else:
-            print("Servidor saiu do chat. Encerrando..............")
-            break
-
-cliente_UDP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-# Thread para receber mensagens do servidor
-thread_recebimento = threading.Thread(target=receber_mensagens)
-thread_recebimento.start()
-
-print("\t\tCHAT\n\n")
-while True:
-    mensagem_cliente = input("Envie uma mensagem: ")
-    if mensagem_cliente == "QUIT":
-        print("Encerrando chat...........")
+print("Iniciando chat pós jogo")
+while 1:
+    msg = input("Mensagem para o servidor: ")
+    if msg == "QUIT":
+        cliente.send(msg.encode("UTF-8"))
         break
-    cliente_UDP.sendto(mensagem_cliente.encode('UTF-8'), (SERVER_IP, PORTA_UDP))
+    # envia mensagem para servidor
+    cliente.send(msg.encode("UTF-8"))
 
-thread_recebimento.join()
-
+    # recebe dados do servidor
+    data, addr = cliente.recvfrom(1024)
+    if data.decode("UTF-8") == "QUIT":
+        break
+    print("mensagem recebida do servidor:", data.decode("UTF-8"))
+print("Chat encerrado")
+# fecha conexão com servidor
+cliente.close()
