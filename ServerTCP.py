@@ -6,10 +6,11 @@
 
 from ASCII_art import *
 import socket #importa modulo socket
+import threading
     #TODO: Tentar limpar a tela
  
 SERVER_IP = '192.168.0.2' # endereço IP do servidor
-CLIENTE_IP = '192.168.0.2'
+CLIENTE_IP = '192.168.0.11'
 PORTA_TCP = 4040     # porta disponibilizada pelo servidor
 PORTA_UDP = 6667
 TAMANHO_BUFFER = 1024     # definição do tamanho do buffer
@@ -120,23 +121,29 @@ while 1:
 # Encerra conexão TCP com o cliente
 conn.close()
 
-servidor_UDP = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-# IP e porta que o servidor deve aguardar a conexão
-servidor_UDP.bind((SERVER_IP, PORTA_UDP)) 
+def receber_mensagens():
+    while True:
+        mensagem_cliente, addr = servidor_UDP.recvfrom(1024)
+        mensagem_cliente = mensagem_cliente.decode("UTF-8")
+        if mensagem_cliente != "" and mensagem_cliente != "QUIT":
+           print("Cliente: ", mensagem_cliente)
+        else:
+            print("Cliente saiu do chat. Encerrando..............")
+            break
 
-# Inicia chat após o jogo
+servidor_UDP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+servidor_UDP.bind((SERVER_IP, PORTA_UDP))
+
+# Thread para receber mensagens do cliente
+thread_recebimento = threading.Thread(target=receber_mensagens)
+thread_recebimento.start()
+
 print("\t\tCHAT\n\n")
 while True:
-    mensagem_cliente, addr = servidor_UDP.recvfrom(1024)
-    mensagem_cliente = mensagem_cliente.decode("UTF-8")
-    if mensagem_cliente != "" and mensagem_cliente != "QUIT":
-       print("Cliente: ", mensagem_cliente)
-    else:
-        print("Cliente saiu do chat. Encerrando..............")
-        break
-
-    mensagem_servidor = input("Envie uma mensagem: ").encode('UTF-8')
+    mensagem_servidor = input("Envie uma mensagem: ")
     if mensagem_servidor == "QUIT":
         print("Encerrando chat...........")
         break
-    servidor_UDP.sendto(mensagem_servidor, (CLIENTE_IP, PORTA_UDP))
+    servidor_UDP.sendto(mensagem_servidor.encode('UTF-8'), (CLIENTE_IP, PORTA_UDP))
+
+thread_recebimento.join()

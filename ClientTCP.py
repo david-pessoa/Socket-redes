@@ -5,6 +5,7 @@
 # Pedro Nomura Picchioni  10401616
 from ASCII_art import *
 import socket
+import threading
 
 SERVER_IP = '192.168.0.2' # endereço IP do servidor
 CLIENTE_IP = '192.168.0.2' # endereço IP do Cliente
@@ -108,22 +109,29 @@ while True:
 # fecha conexão TCP com servidor
 clienteTCP.close()
 
-cliente_UDP = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-# IP e porta que o servidor deve aguardar a conexão
-# Inicia CHAT após a partida
+def receber_mensagens():
+    while True:
+        mensagem_servidor, addr = cliente_UDP.recvfrom(1024)
+        mensagem_servidor = mensagem_servidor.decode("UTF-8")
+        if mensagem_servidor != "" and mensagem_servidor != "QUIT":
+           print("Servidor: ", mensagem_servidor)
+        else:
+            print("Servidor saiu do chat. Encerrando..............")
+            break
+
+cliente_UDP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+# Thread para receber mensagens do servidor
+thread_recebimento = threading.Thread(target=receber_mensagens)
+thread_recebimento.start()
+
 print("\t\tCHAT\n\n")
 while True:
-    mensagem_cliente = input("Envie uma mensagem: ").encode('UTF-8')
+    mensagem_cliente = input("Envie uma mensagem: ")
     if mensagem_cliente == "QUIT":
         print("Encerrando chat...........")
         break
-    cliente_UDP.sendto(mensagem_cliente, (SERVER_IP, PORTA_UDP))
+    cliente_UDP.sendto(mensagem_cliente.encode('UTF-8'), (SERVER_IP, PORTA_UDP))
 
-    mensagem_servidor, addr = cliente_UDP.recvfrom(1024)
-    mensagem_servidor = mensagem_servidor.decode("UTF-8")
-    if mensagem_servidor != "" and mensagem_servidor != "QUIT":
-       print("Servidor: ", mensagem_servidor)
-    else:
-        print("Servidor saiu do chat. Encerrando..............")
-        break
+thread_recebimento.join()
 
