@@ -3,4 +3,4 @@ Nesse projeto, utilizamos o módulo sockets do python para estabelecer uma conex
 diferentes para que duas pessoas pudessem jogar Pedra papel e tesoura. Após encerrar a partida, os jogadores podem conversar por um chat online.
 OBS: Para sair do jogo e do chat, basta digitar: QUIT.
 
-## Vídeo mostrando execução do código
+## [Vídeo mostrando execução do código](https://github.com/david-pessoa/Socket-redes/blob/main/Video%20redes.mp4)
